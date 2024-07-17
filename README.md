@@ -28,7 +28,7 @@ This module support all CRUD actions, executed as admin.
 
 Older versions may work, but are not tested.
 
-## Smilarity with n8n-nodes-pocketbase
+## Similarity with n8n-nodes-pocketbase
 
 This module is a fork of [n8n-nodes-pocketbase](https://github.com/TheFehr/n8n-nodes-pocketbase) with some changes:
 
