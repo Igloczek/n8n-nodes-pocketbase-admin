@@ -1,16 +1,8 @@
-# n8n-nodes-pocketbase
+# n8n-nodes-pocketbase-admin
 
-This is a n8n community node. It lets you use PocketBase in your n8n workflows.
+This n8n community node lets you use PocketBase in your n8n workflows.
 
 PocketBase is an open source backend consisting of embedded database (SQLite) with realtime subscriptions, built-in auth management, convenient dashboard UI and simple REST-ish API.
-
-[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
-
-[Installation](#installation)  
-[Operations](#operations)  
-[Credentials](#credentials)
-[Compatibility](#compatibility)  
-[Resources](#resources)  
 
 ## Installation
 
@@ -18,20 +10,36 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Operations
 
-Nearly all PocketBase operations for Base collections should be implemented.
+This module support all CRUD actions, executed as admin.
 
-## Credentials
-
-Ensure you have an Auth collection in your PocketBase defined and the "Username/Password" Auth method turned on.  
+- Get List
+- Get One
+- Get Full List
+- Get First List Item
+- Update
+- Create
+- Delete
 
 ## Compatibility
 
-This was developed for version 0.230.3 of n8n and version 0.16.5 of PocketBase.
+- n8n >=1.49.0
+- PocketBase >=0.22.0
+- Node.js >=18.10.0
+
+Older versions may work, but are not tested.
+
+## Smilarity with n8n-nodes-pocketbase
+
+This module is a fork of [n8n-nodes-pocketbase](https://github.com/TheFehr/n8n-nodes-pocketbase) with some changes:
+
+- All actions are performed as admin
+- Adds support for `getFirstListItem`, `getFullList` and `delete` actions
+- Adds support for `skipTotal` parameter
+
+Those modules are not compatible with each other, but can be installed together and used side by side.
 
 ## Resources
 
-* [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
-* [PocketBase Introduction](https://pocketbase.io/docs/)
-
-
-
+- [PocketBase Introduction](https://pocketbase.io/docs/)
+- [PocketBase APIs reference](https://pocketbase.io/docs/api-records/)
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
