@@ -227,7 +227,7 @@ export class PocketBaseAdmin implements INodeType {
 		const action = this.getNodeParameter('action', 0) as string;
 
 		const pb = new PocketBaseSDK(auth.url);
-		await pb.admins.authWithPassword(auth.email, auth.password);
+		await pb.collection('_superusers').authWithPassword(auth.email, auth.password);
 		if (!pb.authStore.isValid) {
 			throw new NodeOperationError(this.getNode(), `Authentication failed!`);
 		}
