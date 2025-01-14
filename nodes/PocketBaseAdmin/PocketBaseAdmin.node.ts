@@ -226,8 +226,8 @@ export class PocketBaseAdmin implements INodeType {
 		const auth = (await this.getCredentials('pocketBaseAdminApi', 0)) as unknown as Credentials;
 		const action = this.getNodeParameter('action', 0) as string;
 
-		const pb = new PocketBaseSDK(auth.url);
-		await pb.admins.authWithPassword(auth.email, auth.password);
+		const pb = new PocketBaseSDK(auth.url) as PocketBaseClient;
+		await pb.collection('_superusers').authWithPassword(auth.email, auth.password);
 		if (!pb.authStore.isValid) {
 			throw new NodeOperationError(this.getNode(), `Authentication failed!`);
 		}

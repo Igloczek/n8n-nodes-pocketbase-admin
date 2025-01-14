@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-pocketbase-admin",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"description": "Interact with your PocketBase instance as admin",
 	"keywords": [
 		"n8n-community-node-package"
@@ -42,10 +42,10 @@
 		]
 	},
 	"dependencies": {
-		"@types/node": "^20.14.11",
-		"pocketbase": "^0.21.3"
+		"pocketbase": "^0.25.0"
 	},
 	"devDependencies": {
+		"@types/node": "^20.14.11",
 		"@typescript-eslint/parser": "^7.15.0",
 		"eslint": "^8.56.0",
 		"eslint-plugin-n8n-nodes-base": "^1.16.1",

@@ -23,8 +23,10 @@ This module support all CRUD actions, executed as admin.
 ## Compatibility
 
 - n8n >=1.49.0
-- PocketBase >=0.22.0
+- PocketBase >=0.23.0
 - Node.js >=18.10.0
+
+If you are using PocketBase 0.22 or older, please stick with version 1.0.0 of this node, since Pocketbase introduced major changes in the API.
 
 Older versions may work, but are not tested.
 

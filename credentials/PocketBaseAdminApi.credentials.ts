@@ -15,7 +15,7 @@ export class PocketBaseAdminApi implements ICredentialType {
 		},
 		{
 			displayName: 'Email',
-			description: 'The email address of the PocketBase admin',
+			description: 'The email address of the PocketBase admin (superuser)',
 			name: 'email',
 			type: 'string',
 			default: '',
@@ -23,7 +23,7 @@ export class PocketBaseAdminApi implements ICredentialType {
 		},
 		{
 			displayName: 'Password',
-			description: 'The password of the PocketBase admin',
+			description: 'The password of the PocketBase admin (superuser)',
 			name: 'password',
 			type: 'string',
 			default: '',
