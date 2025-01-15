@@ -1,8 +1,6 @@
 # n8n-nodes-pocketbase-admin
 
-This n8n community node lets you use PocketBase in your n8n workflows.
-
-PocketBase is an open source backend consisting of embedded database (SQLite) with realtime subscriptions, built-in auth management, convenient dashboard UI and simple REST-ish API.
+This n8n community node lets you use PocketBase as superuser (admin) in your n8n workflows.
 
 ## Installation
 
@@ -10,7 +8,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Operations
 
-This module support all CRUD actions, executed as admin.
+This module support all CRUD actions, executed as superuse (admin).
 
 - Get List
 - Get One
@@ -34,7 +32,7 @@ Older versions may work, but are not tested.
 
 This module is a fork of [n8n-nodes-pocketbase](https://github.com/TheFehr/n8n-nodes-pocketbase) with some changes:
 
-- All actions are performed as admin
+- All actions are performed as superuser (admin)
 - Adds support for `getFirstListItem`, `getFullList` and `delete` actions
 - Adds support for `skipTotal` parameter
 
