@@ -2,9 +2,15 @@ const PocketBaseSDK = require('pocketbase/cjs');
 
 import { NodeOperationError } from 'n8n-workflow';
 
-import type { IDataObject, IExecuteFunctions, INodeType, INodeTypeDescription } from 'n8n-workflow';
 import type PocketBaseClient from 'pocketbase';
 import type { RecordListOptions } from 'pocketbase';
+import type {
+	IDataObject,
+	IExecuteFunctions,
+	INodeType,
+	INodeTypeDescription,
+	INodeExecutionData,
+} from 'n8n-workflow';
 
 interface Credentials {
 	url: string;
@@ -222,15 +228,17 @@ export class PocketBaseAdmin implements INodeType {
 
 	async execute(this: IExecuteFunctions) {
 		const items = this.getInputData();
-		const returnData = [];
+		const returnData: INodeExecutionData[] = [];
 		const auth = (await this.getCredentials('pocketBaseAdminApi', 0)) as unknown as Credentials;
 		const action = this.getNodeParameter('action', 0) as string;
 
 		const pb = new PocketBaseSDK(auth.url) as PocketBaseClient;
 		await pb.collection('_superusers').authWithPassword(auth.email, auth.password);
+
 		if (!pb.authStore.isValid) {
 			throw new NodeOperationError(this.getNode(), `Authentication failed!`);
 		}
+
 		const collection = this.getNodeParameter('collection', 0) as string;
 
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
@@ -239,46 +247,46 @@ export class PocketBaseAdmin implements INodeType {
 				switch (action) {
 					case 'getList':
 						elementData = await handleGetList(pb, this, collection, itemIndex);
-						returnData.push(elementData);
-						break;
-
-					case 'getOne':
-						elementData = await handleGetOne(pb, this, collection, itemIndex);
-						returnData.push(elementData);
+						returnData.push(...elementData);
 						break;
 
 					case 'getFullList':
 						elementData = await handleGetFullList(pb, this, collection, itemIndex);
-						returnData.push(elementData);
+						returnData.push(...elementData);
+						break;
+
+					case 'getOne':
+						elementData = await handleGetOne(pb, this, collection, itemIndex);
+						returnData.push(...elementData);
 						break;
 
 					case 'getFirstListItem':
 						elementData = await handleGetFirstListItem(pb, this, collection, itemIndex);
-						returnData.push(elementData);
+						returnData.push(...elementData);
 						break;
 
 					case 'update':
 						elementData = await handleUpdate(pb, this, collection, itemIndex);
-						returnData.push(elementData);
+						returnData.push(...elementData);
 						break;
 
 					case 'create':
 						elementData = await handleCreate(pb, this, collection, itemIndex);
-						returnData.push(elementData);
+						returnData.push(...elementData);
 						break;
 
 					case 'delete':
 						elementData = await handleDelete(pb, this, collection, itemIndex);
-						returnData.push(elementData);
+						returnData.push(...elementData);
 						break;
 				}
 			} catch (error) {
 				if (this.continueOnFail()) {
 					const inputData = this.getInputData(itemIndex);
 					if (inputData && inputData.length > 0) {
-						items.push({ json: inputData[0].json, error, pairedItem: itemIndex });
+						returnData.push({ json: inputData[0].json, error, pairedItem: itemIndex });
 					} else {
-						items.push({ json: {}, error, pairedItem: itemIndex });
+						returnData.push({ json: {}, error, pairedItem: itemIndex });
 					}
 				} else {
 					throw new NodeOperationError(
@@ -290,7 +298,7 @@ export class PocketBaseAdmin implements INodeType {
 			}
 		}
 
-		return [this.helpers.returnJsonArray(returnData)];
+		return [returnData];
 	}
 }
 
@@ -299,11 +307,15 @@ async function handleGetOne(
 	context: IExecuteFunctions,
 	collection: string,
 	itemIndex: number,
-) {
+): Promise<INodeExecutionData[]> {
 	const recordId = context.getNodeParameter('recordId', itemIndex) as string;
 	const record = await pb.collection(collection).getOne(recordId);
 
-	return record as IDataObject;
+	return [
+		{
+			json: record,
+		},
+	];
 }
 
 async function handleGetList(
@@ -311,7 +323,7 @@ async function handleGetList(
 	context: IExecuteFunctions,
 	collection: string,
 	itemIndex: number,
-) {
+): Promise<INodeExecutionData[]> {
 	const { page, elementsPerPage, skipTotal } = context.getNodeParameter(
 		'pagination',
 		itemIndex,
@@ -323,11 +335,19 @@ async function handleGetList(
 		parameters.skipTotal = skipTotal;
 	}
 
-	const records = await pb.collection(collection).getList(page, elementsPerPage, parameters);
+	const response = await pb.collection(collection).getList(page, elementsPerPage, parameters);
 
-	return {
-		...records,
-	} as IDataObject;
+	return response.items.map((record) => ({
+		json: {
+			...record,
+			_meta: {
+				total: response.totalItems,
+				page: response.page,
+				perPage: response.perPage,
+				totalPages: response.totalPages,
+			},
+		},
+	}));
 }
 
 async function handleGetFullList(
@@ -335,14 +355,14 @@ async function handleGetFullList(
 	context: IExecuteFunctions,
 	collection: string,
 	itemIndex: number,
-) {
+): Promise<INodeExecutionData[]> {
 	const parameters = context.getNodeParameter('parameters', itemIndex) as RecordListOptions;
 
 	const records = await pb.collection(collection).getFullList(parameters);
 
-	return {
-		...records,
-	} as IDataObject;
+	return records.map((record) => ({
+		json: record,
+	}));
 }
 
 async function handleGetFirstListItem(
@@ -350,17 +370,19 @@ async function handleGetFirstListItem(
 	context: IExecuteFunctions,
 	collection: string,
 	itemIndex: number,
-) {
+): Promise<INodeExecutionData[]> {
 	const { filter, ...parameters } = context.getNodeParameter(
 		'parameters',
 		itemIndex,
 	) as RecordListOptions;
 
-	const records = await pb.collection(collection).getFirstListItem(filter || '', parameters);
+	const record = await pb.collection(collection).getFirstListItem(filter || '', parameters);
 
-	return {
-		...records,
-	} as IDataObject;
+	return [
+		{
+			json: record,
+		},
+	];
 }
 
 async function handleUpdate(
@@ -368,12 +390,16 @@ async function handleUpdate(
 	context: IExecuteFunctions,
 	collection: string,
 	itemIndex: number,
-) {
+): Promise<INodeExecutionData[]> {
 	const recordId = context.getNodeParameter('recordId', itemIndex) as string;
 	const data = context.getNodeParameter('bodyParameters.parameters', itemIndex) as BodyParameter[];
 	const record = await pb.collection(collection).update(recordId, prepareRequestBody(data));
 
-	return record as IDataObject;
+	return [
+		{
+			json: record,
+		},
+	];
 }
 
 async function handleCreate(
@@ -381,11 +407,15 @@ async function handleCreate(
 	context: IExecuteFunctions,
 	collection: string,
 	itemIndex: number,
-) {
+): Promise<INodeExecutionData[]> {
 	const data = context.getNodeParameter('bodyParameters.parameters', itemIndex) as BodyParameter[];
 	const record = await pb.collection(collection).create(prepareRequestBody(data));
 
-	return record as IDataObject;
+	return [
+		{
+			json: record,
+		},
+	];
 }
 
 async function handleDelete(
@@ -393,11 +423,15 @@ async function handleDelete(
 	context: IExecuteFunctions,
 	collection: string,
 	itemIndex: number,
-) {
+): Promise<INodeExecutionData[]> {
 	const recordId = context.getNodeParameter('recordId', itemIndex) as string;
 	const success = await pb.collection(collection).delete(recordId);
 
-	return { success } as IDataObject;
+	return [
+		{
+			json: { success },
+		},
+	];
 }
 
 type BodyParameter = { name: string; value: string };
