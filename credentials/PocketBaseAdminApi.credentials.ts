@@ -1,9 +1,13 @@
-import { ICredentialType, INodeProperties } from 'n8n-workflow';
+import type { ICredentialTestRequest, ICredentialType, INodeProperties } from 'n8n-workflow';
 
 export class PocketBaseAdminApi implements ICredentialType {
 	name = 'pocketBaseAdminApi';
 	displayName = 'PocketBase Admin API';
 	documentationUrl = 'https://pocketbase.io/docs/authentication/';
+	icon = {
+		light: 'file:../nodes/PocketBaseAdmin/pocketbase.svg',
+		dark: 'file:../nodes/PocketBaseAdmin/pocketbase.dark.svg',
+	} as const;
 	properties: INodeProperties[] = [
 		{
 			displayName: 'URL',
@@ -33,4 +37,16 @@ export class PocketBaseAdminApi implements ICredentialType {
 			},
 		},
 	];
+
+	test: ICredentialTestRequest = {
+		request: {
+			baseURL: '={{$credentials.url}}',
+			url: '/api/collections/_superusers/auth-with-password',
+			method: 'POST',
+			body: {
+				identity: '={{$credentials.email}}',
+				password: '={{$credentials.password}}',
+			},
+		},
+	};
 }

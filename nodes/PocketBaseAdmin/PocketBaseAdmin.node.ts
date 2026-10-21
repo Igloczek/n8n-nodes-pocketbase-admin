@@ -1,6 +1,6 @@
 const PocketBaseSDK = require('pocketbase/cjs');
 
-import { NodeOperationError } from 'n8n-workflow';
+import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import type PocketBaseClient from 'pocketbase';
 import type { RecordListOptions } from 'pocketbase';
@@ -22,7 +22,7 @@ export class PocketBaseAdmin implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'PocketBase Admin',
 		name: 'pocketBaseAdmin',
-		icon: 'file:pocketbase.svg',
+		icon: { light: 'file:pocketbase.svg', dark: 'file:pocketbase.dark.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["action"] + " " + $parameter["collection"]}}',
@@ -30,8 +30,9 @@ export class PocketBaseAdmin implements INodeType {
 		defaults: {
 			name: 'PocketBase',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
+		usableAsTool: true,
 		credentials: [
 			{
 				name: 'pocketBaseAdminApi',

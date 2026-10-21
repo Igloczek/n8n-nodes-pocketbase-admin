@@ -6,6 +6,7 @@
 		"n8n-community-node-package"
 	],
 	"license": "MIT",
+	"homepage": "https://github.com/igloczek/n8n-nodes-pocketbase-admin#readme",
 	"author": {
 		"name": "Bartek Igielski",
 		"email": "igloczek@gmail.com"
@@ -21,13 +22,12 @@
 	"packageManager": "pnpm@9.1.4",
 	"main": "index.js",
 	"scripts": {
-		"preinstall": "npx only-allow pnpm",
 		"build": "tsc && gulp build:icons",
 		"dev": "tsc --watch",
-		"format": "prettier nodes credentials --write",
-		"lint": "eslint nodes credentials package.json",
-		"lintfix": "eslint nodes credentials package.json --fix",
-		"prepublishOnly": "pnpm build && pnpm lint -c .eslintrc.prepublish.js nodes credentials package.json"
+		"format": "oxfmt nodes credentials",
+		"lint": "oxlint nodes credentials",
+		"lintfix": "oxlint nodes credentials --fix",
+		"prepublishOnly": "pnpm build && pnpm lint"
 	},
 	"files": [
 		"dist"
@@ -42,17 +42,17 @@
 		]
 	},
 	"dependencies": {
-		"pocketbase": "^0.25.0"
+		"pocketbase": "^0.28.1"
 	},
 	"devDependencies": {
-		"@types/node": "^20.14.11",
-		"@typescript-eslint/parser": "^7.15.0",
-		"eslint": "^8.56.0",
-		"eslint-plugin-n8n-nodes-base": "^1.16.1",
-		"gulp": "^4.0.2",
+		"@n8n/eslint-plugin-community-nodes": "^0.37.0",
+		"@types/node": "^24.19.2",
+		"eslint-plugin-n8n-nodes-base": "^2.0.0",
+		"gulp": "^5.0.1",
 		"n8n-workflow": "*",
-		"prettier": "^3.3.2",
-		"typescript": "^5.5.3"
+		"oxfmt": "^0.74.0",
+		"oxlint": "^1.89.0",
+		"typescript": "^7.0.2"
 	},
 	"peerDependencies": {
 		"n8n-workflow": "*"
