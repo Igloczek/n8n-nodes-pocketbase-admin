@@ -16,7 +16,7 @@
 		"url": "https://github.com/igloczek/n8n-nodes-pocketbase-admin.git"
 	},
 	"engines": {
-		"node": ">=18.10",
+		"node": "^20.19.0 || >=22.12.0",
 		"pnpm": ">=9.1"
 	},
 	"packageManager": "pnpm@9.1.4",
@@ -25,8 +25,9 @@
 		"build": "tsc && gulp build:icons",
 		"dev": "tsc --watch",
 		"format": "oxfmt nodes credentials",
-		"lint": "oxlint nodes credentials",
-		"lintfix": "oxlint nodes credentials --fix",
+		"lint": "oxlint nodes credentials && pnpm lint:package",
+		"lint:package": "eslint package.json nodes",
+		"lintfix": "oxlint nodes credentials --fix && pnpm lint:package --fix",
 		"prepublishOnly": "pnpm build && pnpm lint"
 	},
 	"files": [
@@ -47,6 +48,8 @@
 	"devDependencies": {
 		"@n8n/eslint-plugin-community-nodes": "^0.37.0",
 		"@types/node": "^24.19.2",
+		"@typescript-eslint/parser": "^8",
+		"eslint": "^10.13.0",
 		"eslint-plugin-n8n-nodes-base": "^2.0.0",
 		"gulp": "^5.0.1",
 		"n8n-workflow": "*",

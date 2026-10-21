@@ -20,13 +20,20 @@ This module support all CRUD actions, executed as superuse (admin).
 
 ## Compatibility
 
-- n8n >=1.49.0
+- n8n >=1.85.0
 - PocketBase >=0.23.0
-- Node.js >=18.10.0
 
 If you are using PocketBase 0.22 or older, please stick with version 1.0.0 of this node, since Pocketbase introduced major changes in the API.
 
-Older versions may work, but are not tested.
+If you are using n8n older than 1.85.0, please stick with version 3.0.0 of this node.
+
+## Development
+
+Requires Node.js ^20.19.0 or >=22.12.0 and pnpm.
+
+- `pnpm build` - compile with TypeScript 7 and copy icons
+- `pnpm lint` - oxlint for code, ESLint for `package.json` (oxlint can't lint JSON)
+- `pnpm format` - format with oxfmt
 
 ## Similarity with n8n-nodes-pocketbase
 

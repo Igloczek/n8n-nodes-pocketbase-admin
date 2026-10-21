@@ -1,8 +1,6 @@
-const PocketBaseSDK = require('pocketbase/cjs');
-
 import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
+import PocketBaseClient from 'pocketbase/cjs';
 
-import type PocketBaseClient from 'pocketbase';
 import type { RecordListOptions } from 'pocketbase';
 import type {
 	IDataObject,
@@ -233,7 +231,7 @@ export class PocketBaseAdmin implements INodeType {
 		const auth = (await this.getCredentials('pocketBaseAdminApi', 0)) as unknown as Credentials;
 		const action = this.getNodeParameter('action', 0) as string;
 
-		const pb = new PocketBaseSDK(auth.url) as PocketBaseClient;
+		const pb = new PocketBaseClient(auth.url);
 		await pb.collection('_superusers').authWithPassword(auth.email, auth.password);
 
 		if (!pb.authStore.isValid) {
